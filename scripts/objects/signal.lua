@@ -251,7 +251,8 @@ function Signal:change_signal(type)
     player                    = self.player,
     raise_built               = false,
     create_build_effect_smoke = false}
-  if self.current_signal and #self.current_signal.get_connected_rails() == 0 then
+  if not self.current_signal then return end
+  if #self.current_signal.get_connected_rails() == 0 then
     self.current_signal.destroy {raise_destroy = false}
     self.current_signal = nil
   elseif self.twin.can_be_used then
@@ -265,9 +266,11 @@ function Signal:change_signal(type)
         player                    = self.player,
         raise_built               = false,
         create_build_effect_smoke = false}
-      if self.twin.current_signal and #self.twin.current_signal.get_connected_rails() == 0 then
+      if not self.twin.current_signal or #self.twin.current_signal.get_connected_rails() == 0 then
         self.current_signal.destroy {raise_destroy = false}
-        self.twin.current_signal.destroy {raise_destroy = false}
+        if self.twin.current_signal then
+          self.twin.current_signal.destroy {raise_destroy = false}
+        end
         self.current_signal = nil
         self.twin.current_signal = nil
       end
@@ -464,6 +467,21 @@ function Signal:find_exit()
 end
 
 -- Restoring the signal
+
+function Signal:create_ghost(signal_name)
+  -- Place a ghost of the given signal at this location. Returns nil when even the ghost can not be placed.
+  return self.surface.create_entity {
+    name        = "entity-ghost",
+    inner_name  = signal_name,
+    position    = self.position,
+    direction   = self.direction,
+    rail_layer  = self.rail_layer,
+    force       = self.player.force,
+    player      = self.player,
+    raise_built = true
+  }
+end
+
 function Signal:restore_signal(should_revive)
   -- Restore the original signal and mark it to be changed into the current signal (with upgrade/deconstruction/create)
   local player = self.player
@@ -473,26 +491,22 @@ function Signal:restore_signal(should_revive)
   local new_name
   if self.current_signal then
     has_new_signal = true
-    new_type = self.current_signal.type
-    new_name = self.current_signal.name or self.current_signal.type
+    if self.current_signal.name == "entity-ghost" then
+      -- the planner left the original ghost in place, so read the signal it stands for
+      new_type = self.current_signal.ghost_type
+      new_name = self.current_signal.ghost_name
+    else
+      new_type = self.current_signal.type
+      new_name = self.current_signal.name or self.current_signal.type
+    end
     self.current_signal.destroy {raise_destroy = false}
     self.current_signal = nil
   end
   if orig then
     if orig.is_ghost then
-      if has_new_signal and self.current_signal then
-        self.current_signal.destroy {raise_destroy = true}
-        self.current_signal = nil
-        self.current_signal = self.surface.create_entity {
-          name        = "entity-ghost",
-          inner_name  = new_name,
-          position    = self.position,
-          direction   = self.direction,
-          rail_layer  = self.rail_layer,
-          force       = player.force,
-          player      = player,
-          raise_built = true
-        }
+      if has_new_signal then
+        -- The original was a ghost, so restore a ghost of whatever should end up here
+        self.current_signal = self:create_ghost(new_name)
       end
       goto continue
     else
@@ -506,6 +520,17 @@ function Signal:restore_signal(should_revive)
         create_build_effect_smoke = false,
         item_index                = 0,
       }
+      if not self.current_signal then
+        -- The rail layout changed since the original signal was picked up (merging two rail
+        -- lines turns this spot into a junction), so the original can not be placed back.
+        -- Leave a ghost of whatever should end up here rather than crashing or silently
+        -- swallowing the signal. When no new signal is wanted the original was going to be
+        -- deconstructed anyway, so leaving nothing behind is the intended end state.
+        if has_new_signal then
+          self.current_signal = self:create_ghost(new_name)
+        end
+        goto continue
+      end
       self.current_signal.last_user = orig.last_user
       self.current_signal.health = orig.health
     end

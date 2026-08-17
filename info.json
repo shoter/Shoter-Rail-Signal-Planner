@@ -1,13 +1,13 @@
 {
-  "name": "RailSignalPlanner",
-  "version": "2.0.3",
+  "name": "ShoterRailSignalPlanner",
+  "version": "2.0.0",
   "title": "Shoter Rail Signal Planner",
-  "author": "LeonSkills",
-  "contact": "discord: L__eon",
-  "homepage": "https://github.com/LeonSkills/FactorioMods",
+  "author": "Shoter",
+  "contact": "Steam shoter0",
+  "homepage": "https://github.com/shoter/Shoter-Rail-Signal-Planner",
   "factorio_version": "2.0",
   "dependencies": [
     "base >= 2.0"
   ],
-  "description": "Provides a tool to automatically place chain and rail signals on rails and intersections."
+  "description": "Provides a tool to automatically place chain and rail signals on rails and intersections. Based on Rail Signal Planner by LeonSkills (https://github.com/LeonSkills/FactorioMods), used under the MIT License."
 }
