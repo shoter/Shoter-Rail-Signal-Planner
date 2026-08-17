@@ -1,175 +1,34 @@
 ---------------------------------------------------------------------------------------------------
-Version: 2.0.3
-Date: 2025-03-25
-  Bugfixes:
-    - Fixed one-of error with rail lengths.
----------------------------------------------------------------------------------------------------
-Version: 2.0.2
-Date: 2024-12-22
-  Bugfixes:
-    - Fixed a crash when using legacy rails
----------------------------------------------------------------------------------------------------
-Version: 2.0.1
-Date: 2024-11-27
-  Bugfixes:
-    - Fixed a crash when right clicking the menu when in remote mode
----------------------------------------------------------------------------------------------------
 Version: 2.0.0
-Date: 2024-11-24
-  Features:
-    - Added support for the new 2.0 curved rails
-    - Added support for elevated rails
-    - Signals creations/deletions/upgrades are placed in the undo queue
-  Optimizations:
-    - replaced a large lookup table with a single api call
----------------------------------------------------------------------------------------------------
-Version: 1.2.9
-Date: 2023-02-24
-  Bugfixes:
-    - Fixed crash when any creative mod destroys items `on_marked_for_deconstruction`
-    - Fixed crash when removing the settings button
----------------------------------------------------------------------------------------------------
-Version: 1.2.8
-Date: 2023-02-20
-  Bugfixes:
-    - Fixed crash when placing a spaceship clamp (Space Exploration)
----------------------------------------------------------------------------------------------------
-Version: 1.2.7
-Date: 2023-02-06
-  Changes:
-    - Removed ability to place the planner in your inventory. It now behaves the same as copy and paste tools ("only-in-cursor"). Settings can still be opened through the top left menu button or shortcut (default now SHIFT + P)
-    - Moved all default shortcuts from <Modifier key> + S to <Modifier key> + P, so it does interfere with running south while holding one of the modifier keys. Controls can be changed similar to all vanilla controls.
-  Bugfixes:
-    - Fixed a crash when creating a rail with invalid direction when the rail itself was also already invalid
----------------------------------------------------------------------------------------------------
-Version: 1.2.6
-Date: 2023-02-04
-  Changes:
-    - Removed hidden rail planners from the UI (Affects for example the ghost on water mod)
-  Bugfixes:
-    - Fixed crash when a mod changed settings via script
----------------------------------------------------------------------------------------------------
-Version: 1.2.5
-Date: 2023-02-04
-  Bugfixes:
-    - Fixed accidentally removing renderings from other mods
----------------------------------------------------------------------------------------------------
-Version: 1.2.4
-Date: 2023-02-03
-  Bugfixes:
-    - Fixed a bug when trying to drop an item when the cursor stack was not valid for read
----------------------------------------------------------------------------------------------------
-Version: 1.2.3
-Date: 2023-02-01
-  Changes:
-    - Changed the order it signals long stretches again to have the starting priority as exits > entrances > existing signals > others
-  Optimizations:
-    - Unwound a large recursive call when placing signals
-  Bugfixes:
-    - Fixed crash when a rail does not have an attached rail or rail chain signal
-    - Fixed a bug when trying to drop an item when the cursor stack is not valid
-  Scripting:
-    - Added option for other mods to add support for custom rails to the planner using `remote.call("RailSignalPlanner", "add_supported_rail", rail_name, rail_planner_name?)`
----------------------------------------------------------------------------------------------------
-Version: 1.2.2
-Date: 2023-02-01
-  Features:
-    - Added a shortcut for closing/opening the menu
-    - Added a shortcut for toggling one-way rails
-    - Added a shortcut for toggling building signals while building rails
-    - Right click on the menu button now puts Rail signal planner item in your cursor
-  Gui:
-    - If there are no more buttons in the top left menu when removing the rsp menu button then the bar is removed
-    - Menu button now uses the same style as GUI Unifyer mod if installed.
-  Changes:
-    - Changed the order how long stretches are signalled. It now starts counting in the order exits > existing signals > entrances > others
-  Bugfixes:
-    - Fixed the menu closing when switching rail type
-    - Fixed pressing Z when cursor was outside of reach distance not clearing the planner
-    - Fixed error when trying to remove the menu button through settings
-    - Fixed some distances being one length off (< vs <= issues)
----------------------------------------------------------------------------------------------------
-Version: 1.2.1
-Date: 2023-01-31
-  Gui:
-    - Added a close button
-    - Updated the settings interface to look better on smaller screens
----------------------------------------------------------------------------------------------------
-Version: 1.2.0
-Date: 2023-01-31
-  Major Features:
-    - Allows signals to be placed when building rails
-    - Added cargo ships compatibility
-  Features:
-    - Added option to disallow rails to be built if the rail direction is conflicting
-    - Added option to only allow unidirectional rails
-    - Added option to remove construction job for signals (right click + drag) and order to deconstruct all signals (shift + right click + drag)
-  Changes:
-    - Automatically check for rails outside of the selection if they should be included in the calculation
-  Gui:
-    - Moved the settings GUI from center to left menu
-    - Added a mod gui button. Settings menu can now be option by this button and by right click on the planner. Can be removed in mod options
-    - Added settings per rail planner. (So different settings possible for normal rails, cargo ships, space rails, etc.)
-    - Use the elem_filters of the gui to allow players to only pick rail-signal/rail-chain-signal entities
-  Graphics:
-    - Updated the mod icon to use new rail signal graphics
----------------------------------------------------------------------------------------------------
-Version: 1.1.1
-Date: 2022-11-29
-  Bugfixes:
-    - Fixed crash when setting train lengths
----------------------------------------------------------------------------------------------------
-Version: 1.1.0
-Date: 2021-01-13
+Date: 2026-08-17
   Info:
-    - Updated for Factorio 1.1.0
----------------------------------------------------------------------------------------------------
-Version: 0.1.7
-Date: 2020-02-06
-  Locale:
-    - Added Russian (RU) locale
-    - Removed text from locale that planner can only be right clicked in inventory
----------------------------------------------------------------------------------------------------
-Version: 0.1.6
-Date: 2020-02-04
+    - Initial release of Shoter Rail Signal Planner, a fork of Rail Signal Planner by LeonSkills.
+    - Version numbering restarts here and is independent from the original mod.
+  Features:
+    - Selection tool that places rail signals and rail chain signals on rails and intersections.
+    - Works out where a chain signal is needed and where a plain rail signal is enough, so merges
+      and intersections do not deadlock.
+    - Optionally places signals automatically while you are building rails with a rail planner.
+    - Configurable train length and rail signal spacing, stored separately per rail planner.
+    - "One-way rails only" mode that refuses to signal rails that would become bidirectional.
+    - Supports the 2.0 curved rails, elevated rails and legacy rails.
+    - Signals within reach are built from your inventory; anything further away is left as ghosts,
+      upgrade orders or deconstruction orders so construction robots finish the job.
+    - Existing signals are respected: they are restored and then marked for upgrade or removal
+      rather than being replaced silently, which keeps the changes in the undo queue.
+    - Reverse-select with the tool to cancel queued signal work, or alt-reverse-select to
+      deconstruct signals.
+    - Settings menu reachable from the top left button, a shortcut, or right clicking the planner.
+    - Remote interface for other mods to register custom rails:
+      remote.call("RailSignalPlanner", "add_supported_rail", rail_name, rail_planner_name?)
   Bugfixes:
-    - Fixed bug where GUI couldn't be opened
----------------------------------------------------------------------------------------------------
-Version: 0.1.5
-Date: 2020-01-21
-  Info:
-    - Updated for Factorio 0.18.0
----------------------------------------------------------------------------------------------------
-Version: 0.1.4
-Date: 2020-01-04
-  Bugfixes:
-    - Fixed a bug where it incorrectly removed some chain signals due to the optimization done in 0.1.1
----------------------------------------------------------------------------------------------------
-Version: 0.1.3
-Date: 2019-12-31
-  Bugfixes:
-    - Fixed a bug where rail ghosts were removed with the planner
----------------------------------------------------------------------------------------------------
-Version: 0.1.2
-Date: 2019-12-28
-  Changes:
-    - Changed being able to pick entities in the planner to being able to pick items instead.
-  Bugfixes:
-    - Fixed a crash when trying to use signals that have no items to place
----------------------------------------------------------------------------------------------------
-Version: 0.1.1
-Date: 2019-12-28
-  Changes:
-    - Added better support for modded rail signals. Mainly for Realistic_Electric_Trains, but should affect other modded signals too
-    - Removed possibility for two consecutive chain signals to be placed
-  Locale:
-    - Added German (DE) locale
----------------------------------------------------------------------------------------------------
-Version: 0.1.0
-Date: 2019-12-27
-  Info:
-    - Initial release
-
-  Locale:
-    - Added Dutch (NL) locale
-    - Added English (EN) locale
+    - Fixed a crash when restoring a signal at a position that stopped accepting signals after the
+      rail layout changed, for example when merging two rail lines into one.
+    - Fixed existing ghost signals being deleted instead of restored after the planner ran.
+    - Fixed crashes when a signal entity failed to be created and the result was used anyway.
+    - Fixed a helper removing the last entry of a list when the entry it was asked to remove was
+      not present, which could sever unrelated connections in the signal graph.
+    - Fixed a crash when a rail was replaced by another mod and no unique replacement was found.
+    - Fixed block length being measured from the wrong rail, and curved rails never being
+      recognised, so the distance used to decide how far to look for exits was far too small.
+    - Fixed a signal only ever recording the first rail it was attached to.
