@@ -14,14 +14,6 @@ local function debug()
   end
 end
 
-local function rail_length(connected_rail)
-  -- Return the approximate length of a rail.
-  -- Used to check how far back the rails should be checked for potential exits
-  -- This is an approximation!
-  if connected_rail.type == "curved-rail" then return 9 end
-  return 2
-end
-
 local function add_block(rail, player, distance_so_far)
   -- Add all rails that are in this block to the network
   if not rail or not rail.valid then return end
@@ -36,7 +28,7 @@ local function add_block(rail, player, distance_so_far)
     local id = entity_id(current_rail)
     if Rail.all_rails[id] then goto continue end
     Rail:new(current_rail, player)
-    block_distance = block_distance + rail_length(rail)
+    block_distance = block_distance + rail_length(current_rail)
     local connections_found = false
     for _, connected_rail in pairs(rail_connected_rails(current_rail)) do
       if not Rail.all_rails[entity_id(connected_rail)] then

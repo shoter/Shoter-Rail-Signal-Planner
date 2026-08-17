@@ -10,8 +10,9 @@ function Signal:new(position, direction, rail_layer, surface, player, length, ra
   if signal then
     signal.player = signal.player or player
     signal.length = signal.length or length
-    if signal.rails[entity_id(rail)] then
-      signal.rails[entity_id(rail)] = rail
+    local rail_id = entity_id(rail)
+    if not signal.rails[rail_id] then
+      signal.rails[rail_id] = rail
     end
     signal.invalid = false
     return signal

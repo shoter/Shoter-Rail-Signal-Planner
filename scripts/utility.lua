@@ -85,7 +85,11 @@ function tablefind(tab, el)
 end
 
 function remove(tbl, element)
-  table.remove(tbl, tablefind(tbl, element))
+  -- table.remove treats a nil position as "no position given" and drops the last element,
+  -- so a missing element has to be handled here instead of silently removing something else
+  local index = tablefind(tbl, element)
+  if not index then return end
+  table.remove(tbl, index)
 end
 
 function create_unique_id(position, direction, layer)

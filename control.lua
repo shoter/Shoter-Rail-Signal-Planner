@@ -72,7 +72,7 @@ local function build_signals(rails, player, using_rail_planner, invert_bidirecti
   if not succeeded then
     if using_rail_planner and get_setting("force_build_rails", player) == false then
       for _, rail in pairs(rails) do
-        if rail.valid then
+        if rail and rail.valid then
           player.mine_entity(rail, false)
         end
       end
