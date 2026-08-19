@@ -72,6 +72,9 @@ end
 
 function Signal:connect_to_back(other)
   -- Connect this signal to the given signal
+  -- Two rail ends can end up sharing one signal spot (when a signal falls back to its
+  -- alternative location); a self-edge would break the direction marking
+  if self == other then return end
   if not contains(self.signals_front, other) then
     table.insert(self.signals_front, other)
   end
@@ -206,7 +209,7 @@ function Signal:can_place()
     name             = self.signal_entities["rail-signal"],
     position         = self.position,
     direction        = self.direction,
-    force            = self.force,
+    force            = self.player.force,
     rail_layer       = self.rail_layer,
     build_check_type = defines.build_check_type.manual,
   }
@@ -242,7 +245,7 @@ function Signal:change_signal(type)
     self.twin.current_signal = nil
   end
   if #self.surface.find_entities_filtered {position = self.position, type = "entity-ghost"} > 0 then return end
-  if not self.surface.can_place_entity {name = signal_name, position = self.position, direction = self.direction, force = self.force, rail_layer = self.rail_layer} then return end
+  if not self.surface.can_place_entity {name = signal_name, position = self.position, direction = self.direction, force = self.player.force, rail_layer = self.rail_layer} then return end
   self.current_signal = self.surface.create_entity {
     name                      = signal_name,
     position                  = self.position,
@@ -257,7 +260,7 @@ function Signal:change_signal(type)
     self.current_signal.destroy {raise_destroy = false}
     self.current_signal = nil
   elseif self.twin.can_be_used then
-    if self.surface.can_place_entity {name = signal_name, position = self.twin.position, direction = self.twin.direction, force = self.force} then
+    if self.surface.can_place_entity {name = signal_name, position = self.twin.position, direction = self.twin.direction, force = self.player.force} then
       self.twin.current_signal = self.surface.create_entity {
         name                      = signal_name,
         position                  = self.twin.position,

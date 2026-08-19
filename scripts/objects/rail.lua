@@ -71,19 +71,17 @@ function Rail:connect_rails()
   end
   self.visited_connect_rail = true
   for _, rail_connection_direction in pairs({"left", "straight", "right"}) do
-    local connected_rail_front = self.entity.get_connected_rail {rail_direction = defines.rail_direction.front, rail_connection_direction = defines.rail_connection_direction[rail_connection_direction]}
-    local connected_rail_back = self.entity.get_connected_rail {rail_direction = defines.rail_direction.back, rail_connection_direction = defines.rail_connection_direction[rail_connection_direction]}
+    local connected_rail_front, front_joined_end = self.entity.get_connected_rail {rail_direction = defines.rail_direction.front, rail_connection_direction = defines.rail_connection_direction[rail_connection_direction]}
+    local connected_rail_back, back_joined_end = self.entity.get_connected_rail {rail_direction = defines.rail_direction.back, rail_connection_direction = defines.rail_connection_direction[rail_connection_direction]}
 
     if connected_rail_front then
       local rail_obj = Rail.all_rails[entity_id(connected_rail_front)]
       if rail_obj then
         local connections = rail_obj:connect_rails()
         if connections then
-          -- Here we could check a lookup table which one should connect to which.
-          -- Or we just connect it to the one with the shortest (taxicab) distance
-          local dist_back = taxicab_distance(front_out.position, connections.back_in.position)
-          local dist_front = taxicab_distance(front_out.position, connections.front_in.position)
-          if dist_back < dist_front then
+          -- The engine reports which end of the connected rail touches this one,
+          -- so connect to that end instead of guessing by distance
+          if front_joined_end == defines.rail_direction.back then
             front_out:connect_to_back(connections.back_in)
             connections.back_out:connect_to_back(front_in)
           else
@@ -98,11 +96,9 @@ function Rail:connect_rails()
       if rail_obj then
         local connections = rail_obj:connect_rails()
         if connections then
-          -- Here we could check a lookup table which one should connect to which.
-          -- Or we just connect it to the one with the shortest (taxicab) distance
-          local dist_back = taxicab_distance(back_out.position, connections.back_in.position)
-          local dist_front = taxicab_distance(back_out.position, connections.front_in.position)
-          if dist_back < dist_front then
+          -- The engine reports which end of the connected rail touches this one,
+          -- so connect to that end instead of guessing by distance
+          if back_joined_end == defines.rail_direction.back then
             back_out:connect_to_back(connections.back_in)
             connections.back_out:connect_to_back(back_in)
           else

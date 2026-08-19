@@ -1,4 +1,18 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.0.1
+Date: 2026-08-19
+  Bugfixes:
+    - Fixed signals sometimes ending up on the wrong side of the track, which made that stretch of
+      rail one-way in the wrong direction. Where two rails meet, the planner guessed which end of
+      the neighbouring rail it joined by comparing distances. That guess could pick the wrong end
+      when a signal had been moved to its alternative spot, swapping the two sides of the track
+      from that junction onwards. The joining end is now read from the game instead of guessed.
+    - Fixed the planner freezing or leaving signals out when two rail ends share a single signal
+      spot, which can happen when a signal is moved to its alternative spot.
+    - Fixed placement checks being made for the neutral force instead of your own, so spots taken
+      by your own ghosts or by entities marked for deconstruction were treated as blocked. This
+      pushed signals onto alternative spots and could leave signals out entirely.
+---------------------------------------------------------------------------------------------------
 Version: 2.0.0
 Date: 2026-08-17
   Info:
