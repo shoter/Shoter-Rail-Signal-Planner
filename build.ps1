@@ -34,6 +34,7 @@ $IgnoreDirectories = @(
 
 $IgnoreFiles = @(
     'build.ps1'
+    'deploy-local.ps1'
     '.gitignore'
     '.gitattributes'
     '*.zip'

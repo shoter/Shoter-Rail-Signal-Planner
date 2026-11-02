@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.0
+Date: 2026-11-01
+  Info:
+    - Updated for Factorio 2.1. This version requires Factorio 2.1 or newer.
+  Bugfixes:
+    - Fixed the invisible chain signal from rail compatibility mods being hidden with an invalid
+      prototype flag. It is now hidden with the 2.0+ "hidden" property.
+---------------------------------------------------------------------------------------------------
 Version: 2.0.1
 Date: 2026-08-19
   Bugfixes:
