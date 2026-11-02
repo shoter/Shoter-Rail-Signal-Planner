@@ -13,7 +13,18 @@ function get_supported_rail(rail_name)
   return supported_rails[rail_name]
 end
 
-remote.add_interface("RailSignalPlanner", {
-  add_supported_rail = add_supported_rail,
-  get_rail_planner   = get_rail_planner
-})
+local function interface()
+  return {
+    add_supported_rail = add_supported_rail,
+    get_supported_rail = get_supported_rail,
+    get_rail_planner   = get_supported_rail
+  }
+end
+
+remote.add_interface("ShoterRailSignalPlanner", interface())
+
+-- Keep the legacy name for mods written against the original Rail Signal Planner,
+-- but don't clash with it when the original mod is enabled alongside this one.
+if not remote.interfaces["RailSignalPlanner"] then
+  remote.add_interface("RailSignalPlanner", interface())
+end

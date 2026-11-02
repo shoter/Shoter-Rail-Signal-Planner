@@ -1,4 +1,14 @@
 ---------------------------------------------------------------------------------------------------
+Version: 2.1.1
+Date: 2026-11-02
+  Bugfixes:
+    - Fixed a crash on load ("An interface already exists under with name: RailSignalPlanner") when
+      the original Rail Signal Planner mod is enabled alongside this one. This mod now registers its
+      own "ShoterRailSignalPlanner" remote interface, and only registers the legacy
+      "RailSignalPlanner" name when no other mod has taken it.
+    - Fixed the remote interface not exposing a lookup function. "get_supported_rail" (and its alias
+      "get_rail_planner") now return the rail planner registered for a given rail.
+---------------------------------------------------------------------------------------------------
 Version: 2.1.0
 Date: 2026-11-01
   Info:
